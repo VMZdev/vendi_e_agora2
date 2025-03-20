@@ -1,0 +1,9 @@
+{
+    "python.linting.enabled": false,
+    "python.linting.pylintEnabled": false,
+    "files.exclude": {
+        "**/*.pyc": true,
+        "**/__pycache__": true,
+        "**/.pytest_cache": true
+    }
+}
