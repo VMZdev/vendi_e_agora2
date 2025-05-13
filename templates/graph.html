@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% set show_back_button = True %}
+
+{% block title %}Gráficos{% endblock %}
+
+{% block header %}
+<i class="fas fa-chart-bar me-2"></i> Visualização de Gráficos
+<p class="lead mt-2">Explore dados através de representações visuais</p>
+{% endblock %}
+
+{% block content %}
+<div class="row row-cols-1 row-cols-md-3 g-4 text-center">
+    <!-- Gráfico de Clientes -->
+    <div class="col">
+        <div class="dashboard-card card p-4">
+            <div class="card-icon"><i class="fas fa-user-chart"></i></div>
+            <h5 class="card-title">Clientes</h5>
+            <p class="card-text">Entenda o comportamento de seus clientes</p>
+            <a href="/graph/customer" class="btn btn-dashboard">Acessar</a>
+        </div>
+    </div>
+
+    <!-- Gráfico de Produtos -->
+    <div class="col">
+        <div class="dashboard-card card p-4">
+            <div class="card-icon"><i class="fas fa-box"></i></div>
+            <h5 class="card-title">Produtos</h5>
+            <p class="card-text">Analise a distribuição dos seus produtos</p>
+            <a href="/graph/product" class="btn btn-dashboard">Acessar</a>
+        </div>
+    </div>
+
+    <!-- Gráfico Histórico -->
+    <div class="col">
+        <div class="dashboard-card card p-4">
+            <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+            <h5 class="card-title">Histórico</h5>
+            <p class="card-text">Visualize a evolução das vendas ao longo do tempo</p>
+            <a href="/graph/historico" class="btn btn-dashboard">Acessar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head_extra %}
+<style>
+    .dashboard-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 0.75rem;
+    }
+
+    .card-title {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-text {
+        font-size: 0.95rem;
+        color: #555;
+        margin-bottom: 1rem;
+    }
+
+    .btn-dashboard {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-dashboard:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}

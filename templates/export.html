@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% set show_back_button = True %}
+
+{% block title %}Exportar Dados{% endblock %}
+
+{% block header %}<i class="fas fa-file-export"></i> Exportar Dados{% endblock %}
+
+{% block content %}
+<p class="lead text-center mb-5">Escolha qual tabela deseja exportar como planilha Excel</p>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-header fw-bold" style="background-color: var(--primary-color); color: var(--secondary-color);">
+                Clientes
+            </div>
+            <div class="card-body">
+                <p class="card-text">Exportar todos os dados dos clientes cadastrados.</p>
+                <a href="/export/customer" class="btn-back">
+                    <i class="fas fa-download me-1"></i> Exportar Clientes
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-header fw-bold" style="background-color: var(--primary-color); color: var(--secondary-color);">
+                Produtos
+            </div>
+            <div class="card-body">
+                <p class="card-text">Exportar todos os produtos registrados no sistema.</p>
+                <a href="/export/product" class="btn-back">
+                    <i class="fas fa-download me-1"></i> Exportar Produtos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-header fw-bold" style="background-color: var(--primary-color); color: var(--secondary-color);">
+                Histórico de Vendas
+            </div>
+            <div class="card-body">
+                <p class="card-text">Exportar o histórico completo das vendas realizadas.</p>
+                <a href="/export/historico" class="btn-back">
+                    <i class="fas fa-download me-1"></i> Exportar Histórico
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head_extra %}
+<style>
+    .card-text {
+        font-size: 0.95rem;
+        color: var(--secondary-color);
+    }
+</style>
+{% endblock %}

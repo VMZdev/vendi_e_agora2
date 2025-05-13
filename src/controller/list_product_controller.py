@@ -8,14 +8,10 @@ class ListProductController(ListProductControllerInterface):
         self.__product_repository = product_repository
 
     def list(self) -> Dict:
-        self.__insert_product_in_db()
         product = self.__get_product_in_db()
         response = self.__format_response(product)
         return response
     
-    def __insert_product_in_db(self) -> None:
-        self.__product_repository.insert_product()
-
     def __get_product_in_db(self) -> List[ProductTable]:
         product = self.__product_repository.get_all_products()
         return product

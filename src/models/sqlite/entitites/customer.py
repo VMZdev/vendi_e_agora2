@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Integer
 from src.models.sqlite.settings.base import Base
 
 class CustomerTable(Base):
-    __tablename__ = "Customer"
+    __tablename__ = "customer"
 
     customer_id = Column(Integer, primary_key=True)
     customer_description = Column(String, nullable=False)

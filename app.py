@@ -1,4 +1,4 @@
 from src.main.server.server import app
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3000) #  Debug=False para ambiente de prod
+    app.run(host="0.0.0.0", port=3000, debug=True) #  Debug=False para ambiente de prod

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% set show_back_button = False %}
+
+{% block title %}Login{% endblock %}
+
+{% block header %}Acesso ao Sistema{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4 shadow">
+            <form method="POST" action="/login">
+                <div class="mb-3">
+                    <label for="username" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="username" name="username" required placeholder="Digite seu e-mail">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="password" name="password" required placeholder="Digite sua senha">
+                </div>
+
+                {% if success %}
+                <div class="alert alert-success">Conta criada com sucesso! Faça login.</div>
+                {% endif %}
+
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </div>
+            </form>
+
+            <hr>
+            <div class="text-center">
+                <a href="/register" class="btn-back">Criar nova conta</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Arquivos | Sistema de Vendas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #eacf45;
+            --secondary-color: #241f28;
+            --text-color: #fffced;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        .upload-header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .upload-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .drop-zone {
+            border: 3px dashed var(--primary-color);
+            border-radius: 10px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .drop-zone:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-color: var(--secondary-color);
+        }
+        
+        .drop-zone.dragover {
+            background-color: rgba(52, 152, 219, 0.2);
+            border-color: var(--accent-color);
+        }
+        
+        .file-list {
+            margin-top: 2rem;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .file-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .progress-container {
+            height: 8px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .btn-upload {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-upload:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .upload-history {
+            margin-top: 3rem;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .history-table th {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .history-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .history-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .file-size {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .file-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="upload-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto text-center">
+                    <h1><i class="fas fa-cloud-upload-alt me-2"></i>Upload de Arquivos</h1>
+                    <p class="lead">Envie relatórios, planilhas e outros documentos para o sistema</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Upload Card -->
+                <div class="upload-container">
+                    <h3 class="mb-4"><i class="fas fa-upload me-2"></i>Enviar Arquivos</h3>
+                    
+                    <form id="upload-form" method="POST" enctype="multipart/form-data">
+                        <div class="drop-zone" id="drop-zone">
+                            <input type="file" id="file-input" name="files[]" multiple style="display: none;">
+                            <div class="drop-zone-content">
+                                <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                <h4>Arraste e solte arquivos aqui</h4>
+                                <p class="text-muted">ou clique para selecionar arquivos</p>
+                                <button type="button" class="btn btn-outline-primary mt-2" onclick="document.getElementById('file-input').click()">
+                                    <i class="fas fa-folder-open me-2"></i>Selecionar Arquivos
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="file-list" class="file-list"></div>
+                        
+                        <div id="progress-container" class="progress-container" style="display: none;">
+                            <div id="progress-bar" class="progress-bar"></div>
+                        </div>
+                        
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-upload">
+                                <i class="fas fa-paper-plane me-2"></i>Enviar Arquivos
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Upload History -->
+                <div class="upload-history">
+                    <h3 class="mb-4"><i class="fas fa-history me-2"></i>Histórico de Uploads</h3>
+                    
+                    <div class="table-responsive">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome do Arquivo</th>
+                                    <th>Tipo</th>
+                                    <th>Tamanho</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if data and data.uploads %}
+                                    {% for upload in data.uploads %}
+                                    <tr>
+                                        <td>
+                                            <div class="file-info">
+                                                <i class="fas 
+                                                    {% if upload.type == '.pdf' %}fa-file-pdf
+                                                    {% elif upload.type == '.xlsx' or upload.type == '.xls' %}fa-file-excel
+                                                    {% elif upload.type == '.doc' or upload.type == '.docx' %}fa-file-word
+                                                    {% elif upload.type == '.csv' %}fa-file-csv
+                                                    {% else %}fa-file{% endif %} 
+                                                    file-icon"></i>
+                                                <div>
+                                                    {{ upload.name }}
+                                                    <div class="file-date">{{ upload.date }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ upload.type }}</td>
+                                        <td class="file-size">{{ upload.size }}</td>
+                                        <td>{{ upload.date }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4">Nenhum arquivo enviado ainda</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-5 py-3 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">© 2025 Vendi e agora? VMZ Tecnologia LTDA CNPJ: 54.002.471/0001-68. Todos os direitos reservados.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="/" class="text-decoration-none me-3"><i class="fas fa-home me-1"></i> Início</a>
+                    <a href="/products" class="text-decoration-none me-3"><i class="fas fa-box me-1"></i> Produtos</a>
+                    <a href="/customers" class="text-decoration-none"><i class="fas fa-users me-1"></i> Clientes</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Configuração do drag and drop
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+        const uploadForm = document.getElementById('upload-form');
+    
+        // Funções para highlight/unhighlight
+        const highlight = e => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.add('dragover');
+        };
+    
+        const unhighlight = e => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.remove('dragover');
+        };
+    
+        // Event listeners para drag and drop
+        ['dragenter', 'dragover'].forEach(evt => {
+            dropZone.addEventListener(evt, highlight, false);
+        });
+    
+        ['dragleave', 'drop'].forEach(evt => {
+            dropZone.addEventListener(evt, unhighlight, false);
+        });
+    
+        // Handle dropped files
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                updateFileList(files);
+            }
+        });
+    
+        // Handle selected files
+        fileInput.addEventListener('change', () => {
+            updateFileList(fileInput.files);
+        });
+    
+        // Update file list display
+        function updateFileList(files) {
+            fileList.innerHTML = '';
+            if (!files || files.length === 0) return;
+    
+            const validFiles = Array.from(files).filter(file => 
+                file.name.toLowerCase().endsWith('.xlsx') || 
+                file.name.toLowerCase().endsWith('.xls')
+            );
+    
+            if (validFiles.length === 0) {
+                fileList.innerHTML = `
+                    <div class="alert alert-warning">
+                        Apenas arquivos .xlsx ou .xls são permitidos
+                    </div>
+                `;
+                return;
+            }
+    
+            validFiles.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <i class="fas fa-file-excel file-icon"></i>
+                        <span>${file.name}</span>
+                        <span class="ms-2 text-muted">${formatFileSize(file.size)}</span>
+                    </div>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+    
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    
+        // Form submission
+        uploadForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            const files = fileInput.files;
+            
+            if (!files || files.length === 0) {
+                showAlert('Por favor, selecione pelo menos um arquivo', 'warning');
+                return;
+            }
+    
+            const submitBtn = uploadForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processando...';
+    
+            try {
+                const formData = new FormData();
+                Array.from(files).forEach(file => {
+                    if (file.name.toLowerCase().endsWith('.xlsx') || 
+                        file.name.toLowerCase().endsWith('.xls')) {
+                        formData.append('files[]', file);
+                    }
+                });
+    
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+    
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let message = data.message;
+                    
+                    if (data.stats) {
+                        message += `<br><br><strong>Resultados:</strong><br>
+                            • Clientes novos: ${data.stats.total_customers}<br>
+                            • Produtos novos: ${data.stats.total_products}<br>
+                            • Vendas registradas: ${data.stats.total_sales}`;
+                    }
+                    
+                    if (data.errors) {
+                        message += `<br><br><strong>Erros:</strong><br>${data.errors.join('<br>')}`;
+                    }
+                    
+                    showAlert(message, data.errors ? 'warning' : 'success');
+                    
+                    // Atualizar histórico se algum arquivo foi processado
+                    if (data.processed_files && data.processed_files.length > 0) {
+                        fetchUploadHistory();
+                    }
+                } else {
+                    throw new Error(data.message || 'Erro no servidor');
+                }
+            } catch (error) {
+                showAlert('Erro: ' + error.message, 'danger');
+                console.error('Upload error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Enviar Arquivos';
+                fileInput.value = '';
+                fileList.innerHTML = '';
+            }
+        });
+    
+        // Show alert function
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show mt-3`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            const container = document.querySelector('.upload-container');
+            container.parentNode.insertBefore(alertDiv, container.nextSibling);
+            
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                setTimeout(() => alertDiv.remove(), 150);
+            }, 10000);
+        }
+    
+        // Fetch and render upload history
+        function fetchUploadHistory() {
+            fetch('/upload')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.uploads) {
+                        renderUploadHistory(data.uploads);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching history:', error);
+                });
+        }
+    
+        function renderUploadHistory(uploads) {
+            const tbody = document.querySelector('.history-table tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+    
+            if (!uploads || uploads.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center py-4">
+                            Nenhum upload realizado ainda
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+    
+            uploads.forEach(upload => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="file-info">
+                            <i class="fas fa-file-excel file-icon"></i>
+                            <div>
+                                ${upload.name}
+                                <div class="file-date">${upload.date}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${upload.type}</td>
+                    <td class="file-size">${upload.size}</td>
+                    <td>${upload.date}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    
+        // Load history on page load
+        document.addEventListener('DOMContentLoaded', fetchUploadHistory);
+    </script>
+</body>
+</html>

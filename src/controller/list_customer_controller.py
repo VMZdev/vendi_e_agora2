@@ -8,13 +8,9 @@ class ListCustomerController(ListCustomerControllerInterface):
         self.__customer_repository = customer_repository
 
     def list(self) -> Dict:
-        self.__insert_customers_in_db()
         customer = self.__get_customer_in_db()
         response = self.__format_response(customer)
         return response
-    
-    def __insert_customers_in_db(self) -> None:
-        self.__customer_repository.insert_customer()
 
     def __get_customer_in_db(self) -> List[CustomerTable]:
         customer = self.__customer_repository.get_all_customers()

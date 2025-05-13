@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% set show_back_button = True %}
+
+{% block title %}Gráfico Histórico de Vendas{% endblock %}
+
+{% block header %}
+<i class="fas fa-chart-line"></i> Histórico de Vendas por Mês
+{% endblock %}
+
+{% block content %}
+<div class="chart-container text-center mb-5">
+    <img src="{{ graph_data.graph }}" alt="Gráfico Histórico de Vendas" class="img-fluid rounded shadow">
+</div>
+
+<div class="card">
+    <div class="card-header fw-bold" style="background-color: var(--primary-color); color: var(--secondary-color);">
+        <i class="fas fa-table"></i> Total de Vendas por Mês
+    </div>
+    <div class="card-body table-container">
+        <table class="table table-bordered table-striped text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Mês</th>
+                    <th>Total de Vendas (R$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in graph_data.formatted_data %}
+                <tr>
+                    <td class="fw-bold" style="color: var(--accent-color);">{{ item.month }}</td>
+                    <td>R$ {{ "%.2f"|format(item.total_sales) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block head_extra %}
+<style>
+    .table-container {
+        margin-top: 20px;
+    }
+    .table thead th {
+        background-color: var(--primary-color);
+        color: var(--secondary-color);
+        font-weight: bold;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}

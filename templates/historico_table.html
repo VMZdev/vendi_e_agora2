@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% set show_back_button = True %}
+
+{% block title %}Histórico de Vendas{% endblock %}
+
+{% block header %}<i class="fas fa-history"></i> Histórico de Vendas{% endblock %}
+
+{% block content %}
+<p class="lead text-center">Visualização completa de todas as transações registradas</p>
+
+<div class="card">
+    <div class="card-header fw-bold" style="background-color: var(--primary-color); color: var(--secondary-color);">
+        <i class="fas fa-table"></i> Registros de Vendas
+    </div>
+    <div class="card-body table-container">
+        <table id="salesTable" class="table table-striped table-hover w-100 text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Produto</th>
+                    <th>Cliente</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in historico.data.attributes %}
+                <tr>
+                    <td>{{ item.product_description }}</td>
+                    <td>{{ item.customer_description }}</td>
+                    <td>{{ item.quantidade }}</td>
+                    <td class="valor">R$ {{ "%.2f"|format(item.valor) }}</td>
+                    <td>{{ item.data or "Sem data" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
+    <span class="total-records">Total de registros: {{ historico.data.count }}</span>
+    <a href="/export/historico" class="btn-back"><i class="fas fa-file-export me-2"></i> Exportar Histórico</a>
+</div>
+{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<style>
+    table th, table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .valor {
+        font-weight: bold;
+        color: var(--accent-color);
+    }
+
+    .total-records {
+        font-weight: bold;
+        color: var(--text-color);
+        margin-top: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block scripts_extra %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#salesTable').DataTable({
+            language: { url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json" },
+            dom: '<"top"lf>rt<"bottom"ip>',
+            pageLength: 10,
+            order: [[4, "desc"]],
+            columnDefs: [
+                { type: "currency", targets: 3 },
+                { type: "date-euro", targets: 4 }
+            ]
+        });
+    });
+</script>
+{% endblock %}
